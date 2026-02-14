@@ -2,19 +2,26 @@ import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { BASE_URL } from "../utils/constants";
-import { removeUser } from "../store/userSlice";
+/* import { removeUser } from "../store/userSlice";
+import { removeFeed } from "../store/feedSlice";
+import { clearConnectionRequestList } from "../store/connectionRequestSlice";
+import { removeConnectionList } from "../store/connectionSlice"; */
+import { logout } from "../store/userSlice";
 
 const NavBar = () => {
   const dispatch = useDispatch();
-  const user = useSelector((state) => state.user);
+  const user = useSelector((store) => store.appReducer.user);
 
   const navigate = useNavigate();
 
   const handleLogout = async () => {
-    console.log("logout");
     try {
       await axios.post(BASE_URL + "/logout", {}, { withCredentials: true });
-      dispatch(removeUser());
+      /* dispatch(removeUser());
+      dispatch(removeFeed());
+      dispatch(clearConnectionRequestList());
+      dispatch(removeConnectionList()); */
+      dispatch(logout()); //For a single call, all state data(user, feed, etc.) clear
       navigate("/login");
     } catch (err) {
       console.error(err);
@@ -54,7 +61,10 @@ const NavBar = () => {
                   </Link>
                 </li>
                 <li>
-                  <a>Settings</a>
+                  <Link to="/connections">My Connections</Link>
+                </li>
+                <li>
+                  <Link to="/connection-requests">Connection requests</Link>
                 </li>
                 <li>
                   <a onClick={handleLogout}>Logout</a>
